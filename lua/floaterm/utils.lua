@@ -95,6 +95,11 @@ M.switch_buf = function(buf)
       end,
     }
 
+    -- Override ESC mapping to prevent closing
+    map("n", "<ESC>", "<Nop>", { buffer = state.buf })
+    map("n", "<ESC>", "<Nop>", { buffer = state.sidebuf })
+    map("n", "<ESC>", "<Nop>", { buffer = state.barbuf })
+
     if state.config.mappings.term then
       state.config.mappings.term(state.buf)
     end
