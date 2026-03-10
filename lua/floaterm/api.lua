@@ -118,7 +118,9 @@ M.send_cmd = function(opts)
     end
 
     -- Focus on the terminal buffer before sending command
-    api.nvim_set_current_win(state.win)
+    if api.nvim_win_is_valid(state.win) then
+      api.nvim_set_current_win(state.win)
+    end
     api.nvim_set_current_buf(bufdetails.buf)
     
     local job_id = vim.b[bufdetails.buf].terminal_job_id
