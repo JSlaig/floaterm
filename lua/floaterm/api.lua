@@ -100,36 +100,38 @@ end
 M.send_cmd = function(opts)
   opts = opts or {}
   
-  if not state.terminals then
+  -- Ensure floaterm is initialized and visible
+  if not state.volt_set then
     require("floaterm").open()
+  end
+  
+  -- If no terminals exist, create one with the command
+  if not state.terminals or #state.terminals == 0 then
     require("floaterm.api").new_term(opts)
-  else
-    -- Ensure floaterm is visible
-    if not state.volt_set then
-      require("floaterm").open()
-    end
-    
-    opts.cmd = type(opts.cmd) == "string" and opts.cmd or opts.cmd()
-    opts.buf = opts.buf or state.buf
-    local bufdetails = utils.get_term_by_key(opts.buf)[2]
+    return
+  end
+  
+  -- Send command to current terminal
+  opts.cmd = type(opts.cmd) == "string" and opts.cmd or opts.cmd()
+  opts.buf = opts.buf or state.buf
+  local bufdetails = utils.get_term_by_key(opts.buf)[2]
 
-    if opts.name then
-      bufdetails = utils.get_term_by_key(opts.name, "name")[2]
-    end
+  if opts.name then
+    bufdetails = utils.get_term_by_key(opts.name, "name")[2]
+  end
 
-    -- Focus on the terminal buffer before sending command
-    if api.nvim_win_is_valid(state.win) then
-      api.nvim_set_current_win(state.win)
-    end
-    api.nvim_set_current_buf(bufdetails.buf)
-    
-    local job_id = vim.b[bufdetails.buf].terminal_job_id
-    if job_id then
-      vim.api.nvim_chan_send(job_id, opts.cmd .. "\n")
-      vim.api.nvim_buf_call(bufdetails.buf, function()
-        vim.cmd [[normal G]]
-      end)
-    end
+  -- Focus on the terminal buffer before sending command
+  if api.nvim_win_is_valid(state.win) then
+    api.nvim_set_current_win(state.win)
+  end
+  api.nvim_set_current_buf(bufdetails.buf)
+  
+  local job_id = vim.b[bufdetails.buf].terminal_job_id
+  if job_id then
+    vim.api.nvim_chan_send(job_id, opts.cmd .. "\n")
+    vim.api.nvim_buf_call(bufdetails.buf, function()
+      vim.cmd [[normal G]]
+    end)
   end
 end
 
