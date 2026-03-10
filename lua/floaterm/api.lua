@@ -102,7 +102,19 @@ M.send_cmd = function(opts)
   
   if not state.terminals then
     require("floaterm").open()
-    require("floaterm.api").new_term(opts)
+    -- Create terminal without command first
+    require("floaterm.api").new_term()
+    -- Wait for terminal to initialize, then send command
+    vim.schedule(function()
+      opts.cmd = type(opts.cmd) == "string" and opts.cmd or opts.cmd()
+      local job_id = vim.b[state.buf].terminal_job_id
+      if job_id then
+        vim.api.nvim_chan_send(job_id, opts.cmd .. "\n")
+        vim.api.nvim_buf_call(state.buf, function()
+          vim.cmd [[normal G]]
+        end)
+      end
+    end)
   else
     -- Ensure floaterm is visible
     if not state.volt_set then
