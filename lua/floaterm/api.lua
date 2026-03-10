@@ -104,6 +104,11 @@ M.send_cmd = function(opts)
     require("floaterm").open()
     require("floaterm.api").new_term(opts)
   else
+    -- Ensure floaterm is visible
+    if not state.volt_set then
+      require("floaterm").open()
+    end
+    
     opts.cmd = type(opts.cmd) == "string" and opts.cmd or opts.cmd()
     opts.buf = opts.buf or state.buf
     local bufdetails = utils.get_term_by_key(opts.buf)[2]
