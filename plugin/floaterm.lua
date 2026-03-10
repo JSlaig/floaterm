@@ -12,16 +12,6 @@ vim.api.nvim_create_user_command("FloatermOpenInNewTerm", function()
   end
 end, {})
 
-vim.api.nvim_create_user_command("FloatermSend", function(opts)
-  local cmd = opts.args
-  require("floaterm.api").send_cmd({ cmd = cmd })
-end, { nargs = "*" })
-
-vim.api.nvim_create_user_command("FloatermExec", function(opts)
-  local cmd = opts.args
-  require("floaterm.api").send_cmd({ cmd = cmd })
-end, { nargs = "*" })
-
 vim.api.nvim_create_user_command("FloatermSendNew", function(opts)
   local cmd = opts.args
   local state = require("floaterm.state")
