@@ -98,6 +98,8 @@ M.delete_term = function(buf)
 end
 
 M.send_cmd = function(opts)
+  opts = opts or {}
+  
   if not state.terminals then
     require("floaterm").open()
     require("floaterm.api").new_term(opts)
@@ -111,7 +113,7 @@ M.send_cmd = function(opts)
     end
 
     local job_id = vim.b[bufdetails.buf].terminal_job_id
-    vim.api.nvim_chan_send(job_id, opts.cmd .. " \n")
+    vim.api.nvim_chan_send(job_id, opts.cmd .. "\n")
     vim.api.nvim_buf_call(bufdetails.buf, function()
       vim.cmd [[normal G]]
     end)

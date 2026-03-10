@@ -22,4 +22,14 @@ vim.api.nvim_create_user_command("FloatermExec", function(opts)
   require("floaterm.api").send_cmd({ cmd = cmd })
 end, { nargs = "*" })
 
+vim.api.nvim_create_user_command("FloatermSendNew", function(opts)
+  local cmd = opts.args
+  local state = require("floaterm.state")
+  
+  if not state.volt_set then
+    require("floaterm").open()
+  end
+  require("floaterm.api").new_term({ cmd = cmd })
+end, { nargs = "*" })
+
 
