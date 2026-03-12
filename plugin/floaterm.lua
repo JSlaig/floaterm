@@ -87,20 +87,13 @@ vim.api.nvim_create_user_command("FloatermSendBg", function(opts)
     end
   end
   
-  if not target_term then
-    -- Create new terminal with the name if provided
-    local term_opts = { cmd = cmd, hidden = true }
-    if name and name ~= "" then
-      term_opts.name = name
-    end
-    require("floaterm.api").new_term(term_opts)
-  else
-    -- Send command to existing terminal in background
-    local job_id = vim.b[target_term.buf].terminal_job_id
-    if job_id then
-      vim.api.nvim_chan_send(job_id, cmd .. "\n")
-    end
+  -- Always create new terminal for SendBg (don't reuse existing ones)
+  -- This ensures the command runs in background without showing terminal
+  local term_opts = { cmd = cmd, hidden = true }
+  if name and name ~= "" then
+    term_opts.name = name
   end
+  require("floaterm.api").new_term(term_opts)
 end, { nargs = "*" })
 
 
