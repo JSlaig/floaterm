@@ -174,4 +174,21 @@ M.send_cmd = function(opts)
   end
 end
 
+M.send_bg = function(opts)
+  opts = opts or {}
+  
+  -- Ensure floaterm is initialized (but don't show it)
+  if not state.volt_set then
+    require("floaterm").open()
+    require("floaterm").toggle() -- Hide it immediately
+  end
+  
+  -- Create new terminal with the command
+  local term_opts = { cmd = opts.cmd, hidden = true }
+  if opts.name then
+    term_opts.name = opts.name
+  end
+  require("floaterm.api").new_term(term_opts)
+end
+
 return M
