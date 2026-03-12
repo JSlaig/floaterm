@@ -97,6 +97,21 @@ M.delete_term = function(buf)
   end
 end
 
+M.delete_term_by_name = function(name)
+  if not state.terminals then
+    vim.notify("No terminals available", vim.log.levels.WARN)
+    return
+  end
+
+  local bufdetails = utils.get_term_by_key(name, "name")
+  if not bufdetails then
+    vim.notify("Terminal '" .. name .. "' not found", vim.log.levels.WARN)
+    return
+  end
+
+  M.delete_term(bufdetails[2].buf)
+end
+
 M.send_cmd = function(opts)
   opts = opts or {}
   

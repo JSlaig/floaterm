@@ -2,7 +2,7 @@ vim.api.nvim_create_user_command("FloatermToggle", function()
   require("floaterm").toggle()
 end, {})
 
-vim.api.nvim_create_user_command("FloatermOpenInNewTerm", function()
+vim.api.nvim_create_user_command("FloatermNewTerm", function()
   local state = require("floaterm.state")
   if not state.volt_set then
     require("floaterm").open()
@@ -13,11 +13,6 @@ vim.api.nvim_create_user_command("FloatermOpenInNewTerm", function()
 end, {})
 
 vim.api.nvim_create_user_command("FloatermSend", function(opts)
-  local cmd = opts.args
-  require("floaterm.api").send_cmd({ cmd = cmd })
-end, { nargs = "*" })
-
-vim.api.nvim_create_user_command("FloatermExec", function(opts)
   local cmd = opts.args
   require("floaterm.api").send_cmd({ cmd = cmd })
 end, { nargs = "*" })
@@ -47,5 +42,25 @@ vim.api.nvim_create_user_command("FloatermSendNew", function(opts)
   
   require("floaterm.api").new_term(term_opts)
 end, { nargs = "*" })
+
+vim.api.nvim_create_user_command("FloatermDelete", function(opts)
+  local name = opts.args
+  require("floaterm.api").delete_term_by_name(name)
+end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("FloatermList", function()
+  local state = require("floaterm.state")
+  if not state.terminals or #state.terminals == 0 then
+    vim.notify("No terminals available", vim.log.levels.INFO)
+    return
+  end
+  
+  local lines = {}
+  for i, term in ipairs(state.terminals) do
+    table.insert(lines, string.format("%d: %s", i, term.name or "Terminal"))
+  end
+  
+  vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
+end, {})
 
 
