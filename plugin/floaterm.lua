@@ -58,33 +58,33 @@ vim.api.nvim_create_user_command("FloatermList", function()
   vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
 end, {})
 
-vim.api.nvim_create_user_command("FloatermSendBg", function(opts)
-  local args = opts.args
-  local state = require("floaterm.state")
-  
-  -- Parse arguments: format "name:command" or just "command"
-  local name, cmd
-  local colon_pos = args:find(":")
-  if colon_pos then
-    name = args:sub(1, colon_pos - 1)
-    cmd = args:sub(colon_pos + 1)
-  else
-    cmd = args
-  end
-  
-  -- Ensure floaterm is initialized (but don't show it)
-  if not state.volt_set then
-    require("floaterm").open()
-    require("floaterm").toggle() -- Hide it immediately
-  end
-  
-  -- Create new terminal with command (hidden)
-  -- This works like FloatermSendNew but keeps the terminal hidden
-  local term_opts = { cmd = cmd, hidden = true }
-  if name and name ~= "" then
-    term_opts.name = name
-  end
-  require("floaterm.api").new_term(term_opts)
-end, { nargs = "*" })
+-- vim.api.nvim_create_user_command("FloatermSendBg", function(opts)
+--   local args = opts.args
+--   local state = require("floaterm.state")
+--   
+--   -- Parse arguments: format "name:command" or just "command"
+--   local name, cmd
+--   local colon_pos = args:find(":")
+--   if colon_pos then
+--     name = args:sub(1, colon_pos - 1)
+--     cmd = args:sub(colon_pos + 1)
+--   else
+--     cmd = args
+--   end
+--   
+--   -- Ensure floaterm is initialized (but don't show it)
+--   if not state.volt_set then
+--     require("floaterm").open()
+--     require("floaterm").toggle() -- Hide it immediately
+--   end
+--   
+--   -- Create new terminal with command (hidden)
+--   -- This works like FloatermSendNew but keeps the terminal hidden
+--   local term_opts = { cmd = cmd, hidden = true }
+--   if name and name ~= "" then
+--     term_opts.name = name
+--   end
+--   require("floaterm.api").new_term(term_opts)
+-- end, { nargs = "*" })
 
 
