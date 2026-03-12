@@ -23,13 +23,29 @@ vim.api.nvim_create_user_command("FloatermExec", function(opts)
 end, { nargs = "*" })
 
 vim.api.nvim_create_user_command("FloatermSendNew", function(opts)
-  local cmd = opts.args
+  local args = opts.args
   local state = require("floaterm.state")
+  
+  -- Parse arguments: format "name:command" or just "command"
+  local name, cmd
+  local colon_pos = args:find(":")
+  if colon_pos then
+    name = args:sub(1, colon_pos - 1)
+    cmd = args:sub(colon_pos + 1)
+  else
+    cmd = args
+  end
   
   if not state.volt_set then
     require("floaterm").open()
   end
-  require("floaterm.api").new_term({ cmd = cmd })
+  
+  local term_opts = { cmd = cmd }
+  if name and name ~= "" then
+    term_opts.name = name
+  end
+  
+  require("floaterm.api").new_term(term_opts)
 end, { nargs = "*" })
 
 
