@@ -109,24 +109,31 @@ M.delete_term_by_name = function(name)
     return
   end
 
-  -- If floaterm is open, use normal delete
-  if state.volt_set then
-    M.delete_term(bufdetails[2].buf)
-  else
-    -- If floaterm is not open, just remove from state and delete buffer
-    local index = bufdetails[1]
-    local buf = bufdetails[2].buf
-    
-    table.remove(state.terminals, index)
-    
-    if #state.terminals == 0 then
-      M.new_term()
-    end
-    
-    vim.api.nvim_buf_delete(buf, { force = true })
-    
-    vim.notify("Terminal '" .. name .. "' deleted", vim.log.levels.INFO)
+  local index = bufdetails[1]
+  local buf = bufdetails[2].buf
+  
+  -- Remove the terminal from state
+  table.remove(state.terminals, index)
+  
+  -- Ensure there's always at least one terminal
+  if #state.terminals == 0 then
+    M.new_term()
   end
+  
+  -- Delete the buffer
+  vim.api.nvim_buf_delete(buf, { force = true })
+  
+  -- Update sidebar if floaterm is open
+  if state.volt_set then
+    local volt_redraw = require("volt").redraw
+    local total_lines = vim.api.nvim_buf_get_lines(state.sidebuf, 0, -1, false)
+    vim.api.nvim_set_option_value("modifiable", true, { buf = state.sidebuf })
+    require("volt").set_empty_lines(state.sidebuf, #total_lines, 20)
+    vim.api.nvim_set_option_value("modifiable", true, { buf = state.sidebuf })
+    volt_redraw(state.sidebuf, "all")
+  end
+  
+  vim.notify("Terminal '" .. name .. "' deleted", vim.log.levels.INFO)
 end
 
 M.send_cmd = function(opts)
