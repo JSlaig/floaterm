@@ -21,12 +21,13 @@ vim.api.nvim_create_user_command("FloatermSendNew", function(opts)
   local args = opts.args
   local state = require("floaterm.state")
   
-  -- Parse arguments: format "name:command" or just "command"
+  -- Parse arguments: format "name::command" or just "command"
+  -- Using :: as delimiter to allow spaces in name and command
   local name, cmd
-  local colon_pos = args:find(":")
-  if colon_pos then
-    name = args:sub(1, colon_pos - 1)
-    cmd = args:sub(colon_pos + 1)
+  local delimiter_pos = args:find("::")
+  if delimiter_pos then
+    name = args:sub(1, delimiter_pos - 1)
+    cmd = args:sub(delimiter_pos + 2)
   else
     cmd = args
   end
@@ -62,12 +63,13 @@ end, {})
 --   local args = opts.args
 --   local state = require("floaterm.state")
 --   
---   -- Parse arguments: format "name:command" or just "command"
+--   -- Parse arguments: format "name::command" or just "command"
+--   -- Using :: as delimiter to allow spaces in name and command
 --   local name, cmd
---   local colon_pos = args:find(":")
---   if colon_pos then
---     name = args:sub(1, colon_pos - 1)
---     cmd = args:sub(colon_pos + 1)
+--   local delimiter_pos = args:find("::")
+--   if delimiter_pos then
+--     name = args:sub(1, delimiter_pos - 1)
+--     cmd = args:sub(delimiter_pos + 2)
 --   else
 --     cmd = args
 --   end
