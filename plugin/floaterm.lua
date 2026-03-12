@@ -78,17 +78,8 @@ vim.api.nvim_create_user_command("FloatermSendBg", function(opts)
     require("floaterm").toggle() -- Hide it immediately
   end
   
-  -- Find or create terminal
-  local target_term = nil
-  if name and name ~= "" then
-    local bufdetails = require("floaterm.utils").get_term_by_key(name, "name")
-    if bufdetails then
-      target_term = bufdetails[2]
-    end
-  end
-  
-  -- Always create new terminal for SendBg (don't reuse existing ones)
-  -- This ensures the command runs in background without showing terminal
+  -- Create new terminal with command (hidden)
+  -- This works like FloatermSendNew but keeps the terminal hidden
   local term_opts = { cmd = cmd, hidden = true }
   if name and name ~= "" then
     term_opts.name = name
