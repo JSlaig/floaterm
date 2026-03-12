@@ -31,6 +31,18 @@ M.add_keymap = function(key, buf)
   end, { buffer = state.sidebuf })
 end
 
+M.refresh_keymaps = function()
+  -- Remove all existing number key mappings
+  for i = 1, 9 do
+    pcall(map, "n", tostring(i), "<Nop>", { buffer = state.sidebuf })
+  end
+  
+  -- Re-add key mappings for current terminals
+  for i, term in ipairs(state.terminals) do
+    M.add_keymap(i, term.buf)
+  end
+end
+
 M.gen_term_bufs = function()
   for i, _ in ipairs(state.terminals) do
     state.terminals[i] = vim.tbl_extend("force", M.new_term(), state.terminals[i])

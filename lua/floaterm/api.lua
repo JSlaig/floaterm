@@ -93,6 +93,9 @@ M.delete_term = function(buf)
     require("volt").set_empty_lines(state.sidebuf, #total_lines, 20)
     vim.api.nvim_set_option_value("modifiable", true, { buf = state.sidebuf })
 
+    -- Refresh key mappings to update sidebar numbers
+    utils.refresh_keymaps()
+    
     volt_redraw(state.sidebuf, "all")
   end
 end
@@ -130,6 +133,10 @@ M.delete_term_by_name = function(name)
     vim.api.nvim_set_option_value("modifiable", true, { buf = state.sidebuf })
     require("volt").set_empty_lines(state.sidebuf, #total_lines, 20)
     vim.api.nvim_set_option_value("modifiable", true, { buf = state.sidebuf })
+    
+    -- Refresh key mappings to update sidebar numbers
+    utils.refresh_keymaps()
+    
     volt_redraw(state.sidebuf, "all")
   end
   
