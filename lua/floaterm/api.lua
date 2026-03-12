@@ -109,7 +109,24 @@ M.delete_term_by_name = function(name)
     return
   end
 
-  M.delete_term(bufdetails[2].buf)
+  -- If floaterm is open, use normal delete
+  if state.volt_set then
+    M.delete_term(bufdetails[2].buf)
+  else
+    -- If floaterm is not open, just remove from state and delete buffer
+    local index = bufdetails[1]
+    local buf = bufdetails[2].buf
+    
+    table.remove(state.terminals, index)
+    
+    if #state.terminals == 0 then
+      M.new_term()
+    end
+    
+    vim.api.nvim_buf_delete(buf, { force = true })
+    
+    vim.notify("Terminal '" .. name .. "' deleted", vim.log.levels.INFO)
+  end
 end
 
 M.send_cmd = function(opts)
